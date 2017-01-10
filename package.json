@@ -1,0 +1,15 @@
+{
+  "name": "sidebar-updater",
+  "version": "0.1.0",
+  "description": "Updater script for the /r/AllHail sidebar",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:AllHailSubreddit/sidebar-updater.git",
+    "type": "git"
+  },
+  "author": "Seth Lopez <sethlopezme@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "snoocore": "^3.3.1"
+  }
+}
