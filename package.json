@@ -1,6 +1,6 @@
 {
   "name": "sidebar-updater",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Updater script for the /r/AllHail sidebar",
   "main": "index.js",
   "repository": {
