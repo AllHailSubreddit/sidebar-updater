@@ -85,7 +85,7 @@ module.exports = function gameSchedule(config) {
                 if (index === 0 && summaryRegex.test(value)) {
                   // get the game summary (sport, vs/at, opponent)
                   let match = summaryRegex.exec(value);
-                  game.sport = match[1] || null;
+                  game.sport = match[1].replace(/^University of Louisville\s*/i, '') || null;
                   game.isHomeGame = match[2] && match[2].toLowerCase() === 'vs';
                   game.opponent = match[3] || null;
                 } else if (index !== (array.length - 1)) {
