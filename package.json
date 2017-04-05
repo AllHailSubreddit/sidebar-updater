@@ -16,6 +16,6 @@
     "xml2js": "^0.4.17"
   },
   "scripts": {
-    "zip": "zip -r lambda index.js node_modules"
+    "zip": "rm -f lambda.zip && zip -r lambda index.js lib plugins node_modules"
   }
 }
