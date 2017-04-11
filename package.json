@@ -10,12 +10,17 @@
   "author": "Seth Lopez <sethlopezme@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.15.3",
-    "moment": "^2.17.1",
+    "axios": "^0.16.1",
+    "moment": "^2.18.1",
     "snoocore": "^3.3.1",
     "xml2js": "^0.4.17"
   },
   "scripts": {
+    "test": "ava test/**/*.js --verbose",
     "zip": "rm -f lambda.zip && zip -r lambda index.js lib plugins node_modules"
+  },
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "nock": "^9.0.11"
   }
 }

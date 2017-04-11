@@ -8,7 +8,7 @@
 const moment = require('moment');
 const reddit = require('./lib/reddit');
 const plugins = {
-  gameSchedule: require('./plugins/gameschedule'),
+  calendar: require('./plugins/calendar'),
 };
 
 exports.handler = function handler() {
@@ -17,9 +17,8 @@ exports.handler = function handler() {
       $template: process.env.REDDIT_TEMPLATE,
     })
     .then(response => response.data.content_md)
-    .then(plugins.gameSchedule({
+    .then(plugins.calendar.create({
       url: process.env.GAMESCHEDULE_URL,
-      placeholder: /{{\s*gameschedule\s*}}/ig,
       start: moment().subtract({days: 7}),
       end: moment().add({days: 14}),
       sports: [
