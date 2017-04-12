@@ -430,7 +430,7 @@ test('plugin | calendar | parseItem() returns an object', t => {
   };
   const expected = {
     audio: 'http://gocards.com/showcase?Live=609',
-    datetime: moment('2017-03-09T14:00:00.0000000'),
+    end: moment('2017-03-09T16:00:00.0000000'),
     gender: 'Men\'s',
     id: '13548',
     isCancelled: false,
@@ -443,6 +443,7 @@ test('plugin | calendar | parseItem() returns an object', t => {
     result: 'L',
     score: '81',
     sport: 'Basketball',
+    start: moment('2017-03-09T14:00:00.0000000'),
     tickets: null,
     tv: 'ESPN/ACC Network',
     url: 'http://gocards.com/calendar.aspx?id=13548',
@@ -456,7 +457,6 @@ test('plugin | calendar | parseItem() returns an object', t => {
 test('plugin | calendar | formatGamesForDisplay() returns valid markdown', t => {
   const games = [{
     audio: 'http://gocards.com/showcase?Live=609',
-    datetime: moment('2017-03-09T14:00:00.0000000'),
     gender: 'Men\'s',
     id: '13548',
     isCancelled: false,
@@ -469,6 +469,7 @@ test('plugin | calendar | formatGamesForDisplay() returns valid markdown', t => 
     result: 'L',
     score: '81',
     sport: 'Basketball',
+    start: moment('2017-03-09T14:00:00.0000000'),
     tickets: null,
     tv: 'ESPN/ACC Network',
     url: 'http://gocards.com/calendar.aspx?id=13548',

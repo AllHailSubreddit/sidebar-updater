@@ -11,7 +11,6 @@ const gameBasicsRegex = /^(?:(cancelled|\[[lntw]\])\s+)?university of louisville
 const gameResultRegex = /^([lntw])\s+(?:-\s+)?(?:((?:t-)?\d{1,3}(?:st|nd|rd|th)?)(?:-(\d{1,3}))?)?/i
 const gameDefaults = {
   audio: null,
-  datetime: null,
   gender: null,
   id: null,
   isCancelled: false,
@@ -24,6 +23,7 @@ const gameDefaults = {
   result: null,
   score: null,
   sport: null,
+  start: null,
   tickets: null,
   tv: null,
   url: null,
@@ -186,10 +186,11 @@ function parseItemDescription(description) {
  */
 function parseItem(item) {
   return Object.assign({}, gameDefaults, parseItemDescription(item.description), {
-    datetime: item.localstartdate,
+    end: item.localenddate,
     id: item.gameid || null,
     location: item.location || null,
     promoName: item.gamepromoname || null,
+    start: item.localstartdate,
     url: item.link || null,
   });
 };
@@ -199,7 +200,7 @@ function formatGamesForDisplay(games) {
   return games.reduce((a, v) => {
       a.push([
         v.sport && v.opponent ? `${formatSportForDisplay(v.sport, v.gender)} ${v.isHome ? 'vs' : '@'} _${v.opponent}_` : '',
-        v.datetime ? v.datetime.format('M/D h:mmA') : '',
+        v.start ? v.start.format('M/D h:mmA') : '',
         v.tv ? formatTvForDisplay(v.tv) : '',
         v.result && v.score ? `${v.result} ${formatScoresForDisplay(v.score, v.opponentScore)}` : '',
       ].join('|'));
