@@ -8,7 +8,7 @@ const parseXml = xml.createParser({
   valueProcessors: [parseDate],
 });
 const gameBasicsRegex = /^(?:(cancelled|\[[lntw]\])\s+)?university of louisville\s(?:(men's|women's)\s)?(baseball|basketball|cross country|field hockey|football|golf|lacrosse|rowing|soccer|softball|swimming & diving|tennis|track & field|volleyball)(?:\s+(?:(at|vs)\s+)?(.*))?$/i;
-const gameResultRegex = /([lntw])\s+(?:-\s+)?(?:((?:t-)?\d{1,3}(?:st|nd|rd|th)?)(?:-(\d{1,3}))?)?/i
+const gameResultRegex = /^([lntw])\s+(?:-\s+)?(?:((?:t-)?\d{1,3}(?:st|nd|rd|th)?)(?:-(\d{1,3}))?)?/i
 const gameDefaults = {
   audio: null,
   datetime: null,

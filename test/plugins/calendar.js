@@ -10,103 +10,113 @@ const gocardsMock = nock(gocardsUrl);
 const gocardsRssPath = `/calendar.ashx/calendar.rss`;
 const rss = fs.readFileSync(path.join(__dirname, '../fixtures/plugins/calendar/calendar.rss'));
 
-test('plugin | calendar | game basics regular expression matches valid formats', t => {
+test('plugin | calendar | game basics regular expression matches valid strings', t => {
   const tests = [
     {
-      format: '[L] University of Louisville Men\'s Basketball vs  Duke',
+      input: '[L] University of Louisville Men\'s Basketball vs  Duke',
       expected: ['[L]', 'Men\'s', 'Basketball', 'vs', 'Duke'],
     },
     {
-      format: 'University of Louisville Swimming & Diving vs  NCAA Diving Zones',
+      input: 'University of Louisville Swimming & Diving vs  NCAA Diving Zones',
       expected: [undefined, undefined, 'Swimming & Diving', 'vs', 'NCAA Diving Zones'],
     },
     {
-      format: '[L] University of Louisville Women\'s Tennis at  Clemson',
+      input: '[L] University of Louisville Women\'s Tennis at  Clemson',
       expected: ['[L]', 'Women\'s', 'Tennis', 'at', 'Clemson'],
     },
     {
-      format: '[N] University of Louisville Track & Field vs  NCAA Indoor Championships',
+      input: '[N] University of Louisville Track & Field vs  NCAA Indoor Championships',
       expected: ['[N]', undefined, 'Track & Field', 'vs', 'NCAA Indoor Championships'],
     },
     {
-      format: '[W] University of Louisville Baseball vs  PITTSBURGH',
+      input: '[W] University of Louisville Baseball vs  PITTSBURGH',
       expected: ['[W]', undefined, 'Baseball', 'vs', 'PITTSBURGH'],
     },
     {
-      format: '[W] University of Louisville Softball vs  OHIO',
+      input: '[W] University of Louisville Softball vs  OHIO',
       expected: ['[W]', undefined, 'Softball', 'vs', 'OHIO'],
     },
     {
-      format: '[N] University of Louisville Women\'s Rowing  Oak Ridge Cardinal Invitational',
+      input: '[N] University of Louisville Women\'s Rowing  Oak Ridge Cardinal Invitational',
       expected: ['[N]', 'Women\'s', 'Rowing', undefined, 'Oak Ridge Cardinal Invitational'],
     },
     {
-      format: 'CANCELLED University of Louisville Softball vs  NORTHERN IOWA',
+      input: 'CANCELLED University of Louisville Softball vs  NORTHERN IOWA',
       expected: ['CANCELLED', undefined, 'Softball', 'vs', 'NORTHERN IOWA'],
     },
     {
-      format: '[W] University of Louisville Men\'s Tennis  NOTRE DAME',
+      input: '[W] University of Louisville Men\'s Tennis  NOTRE DAME',
       expected: ['[W]', 'Men\'s', 'Tennis', undefined, 'NOTRE DAME'],
     },
   ];
 
   tests.forEach(v => {
-    t.true(plugin.gameBasicsRegex.test(v.format));
-    t.deepEqual(plugin.gameBasicsRegex.exec(v.format).slice(1, v.expected.length + 1), v.expected);
+    t.true(plugin.gameBasicsRegex.test(v.input));
+    t.deepEqual(plugin.gameBasicsRegex.exec(v.input).slice(1, v.expected.length + 1), v.expected);
   });
 });
 
-test('plugin | calendar | game result regular expression matches valid formats', t => {
+test('plugin | calendar | game result regular expression matches valid strings', t => {
   const tests = [
     {
-      format: 'N -',
+      input: 'N -',
       expected: ['N', undefined, undefined],
     },
     {
-      format: 'W 3-0',
+      input: 'W 3-0',
       expected: ['W', '3', '0'],
     },
     {
-      format: 'W 7-6 (10)',
+      input: 'W 7-6 (10)',
       expected: ['W', '7', '6'],
     },
     {
-      format: 'L 81-77',
+      input: 'L 81-77',
       expected: ['L', '81', '77'],
     },
     {
-      format: 'W 82-62',
+      input: 'W 82-62',
       expected: ['W', '82', '62'],
     },
     {
-      format: 'N - 3 Wins',
+      input: 'N - 3 Wins',
       expected: ['N', '3', undefined],
     },
     {
-      format: 'N - 1st of 22 teams',
+      input: 'N - 1st of 22 teams',
       expected: ['N', '1st', undefined],
     },
     {
-      format: 'N - 2nd of 22 teams',
+      input: 'N - 2nd of 22 teams',
       expected: ['N', '2nd', undefined],
     },
     {
-      format: 'N - 3rd of 22 teams',
+      input: 'N - 3rd of 22 teams',
       expected: ['N', '3rd', undefined],
     },
     {
-      format: 'N - 4th of 22 teams',
+      input: 'N - 4th of 22 teams',
       expected: ['N', '4th', undefined],
     },
     {
-      format: 'N - t-5th of 22 teams',
+      input: 'N - t-5th of 22 teams',
       expected: ['N', 't-5th', undefined],
     },
   ];
 
   tests.forEach(v => {
-    t.true(plugin.gameResultRegex.test(v.format));
-    t.deepEqual(plugin.gameResultRegex.exec(v.format).slice(1, v.expected.length + 1), v.expected);
+    t.true(plugin.gameResultRegex.test(v.input));
+    t.deepEqual(plugin.gameResultRegex.exec(v.input).slice(1, v.expected.length + 1), v.expected);
+  });
+});
+
+test('plugin | calendar | game result regular expression doesn\'t match invalid strings', t => {
+  const tests = [
+    'Radio: WXVW 1450 AM/96.1 FM',
+  ];
+
+  tests.forEach(v => {
+    t.false(plugin.gameResultRegex.test(v));
   });
 });
 
