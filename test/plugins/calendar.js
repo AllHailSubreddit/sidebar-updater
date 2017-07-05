@@ -164,13 +164,19 @@ test('plugin | calendar | create() returns a function', t => {
 });
 
 test('plugin | calendar | create() returns a function that returns valid markdown', t => {
-  const expected = [
-    'Game|Time|TV|Result',
-    ':-:|:-:|:-:|-:',
-    'WROW @ _Double Dual (Indiana, Iowa, Kansas)_|4/1 12:00AM||N 7',
-    'WROW @ _Clemson Invitational_|4/22 12:00AM||',
-    'WROW @ _Michigan_|4/29 12:00AM||',
-  ].join('\n');
+  const expected = `\
+Sport|Home Team|Score|Visiting Team|Score|Time|TV
+-|-|-|-|-|-|-
+Women's Rowing|Double Dual (Indiana, Iowa, Kansas)||Louisville|7|Final|
+Women's Rowing|Clemson Invitational||Louisville||Final|
+Women's Rowing|Michigan||Louisville||Final|`;
+  // const expected = [
+  //   'Game|Time|TV|Result',
+  //   ':-:|:-:|:-:|-:',
+  //   'WROW @ _Double Dual (Indiana, Iowa, Kansas)_|4/1 12:00AM||N 7',
+  //   'WROW @ _Clemson Invitational_|4/22 12:00AM||',
+  //   'WROW @ _Michigan_|4/29 12:00AM||',
+  // ].join('\n');
 
   // mock the rss http response
   gocardsMock.get(gocardsRssPath)
@@ -454,9 +460,10 @@ test('plugin | calendar | parseItem() returns an object', t => {
   t.deepEqual(plugin.parseItem(item), expected);
 });
 
-test('plugin | calendar | formatGamesForDisplay() returns valid markdown', t => {
+test('plugin | calendar | formatGamesForDisplay() returns correct markdown for a past game', t => {
   const games = [{
     audio: 'http://gocards.com/showcase?Live=609',
+    end: moment('2017-03-09T16:00:00.0000000'),
     gender: 'Men\'s',
     id: '13548',
     isCancelled: false,
@@ -466,7 +473,7 @@ test('plugin | calendar | formatGamesForDisplay() returns valid markdown', t => 
     opponentScore: '77',
     promoName: null,
     radio: null,
-    result: 'L',
+    result: 'W',
     score: '81',
     sport: 'Basketball',
     start: moment('2017-03-09T14:00:00.0000000'),
@@ -475,11 +482,52 @@ test('plugin | calendar | formatGamesForDisplay() returns valid markdown', t => 
     url: 'http://gocards.com/calendar.aspx?id=13548',
     video: 'http://es.pn/2l4X8k0',
   }];
-  const expected = [
-    'Game|Time|TV|Result',
-    ':-:|:-:|:-:|-:',
-    'MBB vs _Duke_|3/9 2:00PM|ESPN/ACCN|L 81-77'
-  ].join('\n');
+  // const expected = [
+  //   'Game|Time|TV|Result',
+  //   ':-:|:-:|:-:|-:',
+  //   'MBB vs _Duke_|3/9 2:00PM|[](#i/espn) [](#i/acc-network)|L 81-77'
+  // ].join('\n');
+  const expected = `\
+Sport|Home Team|Score|Visiting Team|Score|Time|TV
+-|-|-|-|-|-|-
+Men's Basketball|[Louisville](#calendar/winner)|81|Duke|77|Final|`;
+
+  t.is(plugin.formatGamesForDisplay(games), expected);
+});
+
+test('plugin | calendar | formatGamesForDisplay() returns correct markdown for a future game', t => {
+  const games = [{
+    audio: 'http://gocards.com/showcase?Live=609',
+    end: moment('2020-03-09T16:00:00.0000000'),
+    gender: 'Men\'s',
+    id: '13548',
+    isCancelled: false,
+    isHome: true,
+    location: 'Brooklyn, NY (Barclays Center)',
+    opponent: 'Duke',
+    opponentScore: '77',
+    promoName: null,
+    radio: null,
+    result: 'W',
+    score: '81',
+    sport: 'Basketball',
+    start: moment('2020-03-09T14:00:00.0000000'),
+    tickets: null,
+    tv: 'ESPN/ACC Network',
+    url: 'http://gocards.com/calendar.aspx?id=13548',
+    video: 'http://es.pn/2l4X8k0',
+  }];
+  const expected = `\
+Sport|Home Team|Score|Visiting Team|Score|Time|TV
+-|-|-|-|-|-|-
+Men's Basketball|[Louisville](#calendar/winner)|81|Duke|77|3/9 2:00PM|[](#i/espn) [](#i/acc-network)`;
+
+  t.is(plugin.formatGamesForDisplay(games), expected);
+});
+
+test('plugin | calendar | formatGamesForDisplay() returns correct markdown for 0 games', t => {
+  const games = [];
+  const expected = '[](#calendar/empty)';
 
   t.is(plugin.formatGamesForDisplay(games), expected);
 });

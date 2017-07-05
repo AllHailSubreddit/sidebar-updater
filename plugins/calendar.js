@@ -197,18 +197,40 @@ function parseItem(item) {
 
 
 function formatGamesForDisplay(games) {
+  if (!games.length) {
+    return '[](#calendar/empty)';
+  }
+
   return games.reduce((a, v) => {
+      if (!v.sport || !v.opponent) {
+        return a;
+      }
+
+      // a.push([
+      //   v.sport && v.opponent ? `${formatSportForDisplay(v.sport, v.gender)} ${v.isHome ? 'vs' : '@'} _${v.opponent}_` : '',
+      //   v.start ? v.start.format('M/D h:mmA') : '',
+      //   v.tv ? formatTvForDisplay(v.tv) : '',
+      //   v.result && v.score ? `${v.result} ${formatScoresForDisplay(v.score, v.opponentScore)}` : '',
+      // ].join('|'));
+
+      const isAfterEnd = v.end.isBefore(moment());
+      const louisville = v.result && v.result.toLowerCase() === 'w' ? '[Louisville](#calendar/winner)' : 'Louisville';
+      const opponent = v.result && v.result.toLowerCase() === 'l' ? `[${v.opponent}](#calendar/winner)` : v.opponent;
+
       a.push([
-        v.sport && v.opponent ? `${formatSportForDisplay(v.sport, v.gender)} ${v.isHome ? 'vs' : '@'} _${v.opponent}_` : '',
-        v.start ? v.start.format('M/D h:mmA') : '',
-        v.tv ? formatTvForDisplay(v.tv) : '',
-        v.result && v.score ? `${v.result} ${formatScoresForDisplay(v.score, v.opponentScore)}` : '',
+        (v.gender ? `${v.gender} ` : '') + v.sport,
+        v.isHome ? louisville : opponent,
+        v.isHome ? v.score : v.opponentScore,
+        v.isHome ? opponent : louisville,
+        v.isHome ? v.opponentScore : v.score,
+        isAfterEnd ? 'Final' : v.start.format('M/D h:mmA'),
+        isAfterEnd ? '' : formatTvForDisplay(v.tv)
       ].join('|'));
 
       return a;
     }, [
-      'Game|Time|TV|Result',
-      ':-:|:-:|:-:|-:'
+      'Sport|Home Team|Score|Visiting Team|Score|Time|TV',
+      '-|-|-|-|-|-|-'
     ])
     .join('\n');
 }
@@ -250,8 +272,34 @@ function formatScoresForDisplay(score, opponentScore) {
 }
 
 function formatTvForDisplay(tv) {
-  return tv.replace('ACC Network', 'ACCN')
-    .replace('SEC Network', 'SECN');
+  if (!tv) {
+    return '';
+  }
+
+  return tv.toLowerCase()
+    .replace('/',                 ' ')
+    .replace('abc',               '[](#i/abc)')
+    .replace('acc network',       '[](#i/acc-network)')
+    .replace('acc network extra', '[](#i/acc-network-extra)')
+    .replace('big ten network',   '[](#i/big-ten-network)')
+    .replace('cbs',               '[](#i/cbs)')
+    .replace('cbs sports',        '[](#i/cbs-sports)')
+    .replace('espn',              '[](#i/espn)')
+    .replace('espn2',             '[](#i/espn2)')
+    .replace('espn3',             '[](#i/espn3)')
+    .replace('espnu',             '[](#i/espnu)')
+    .replace('fox',               '[](#i/fox)')
+    .replace('fox sports',        '[](#i/fox-sports)')
+    .replace('fs1',               '[](#i/fs1)')
+    .replace('longhorn network',  '[](#i/longhorn-network)')
+    .replace('nbc',               '[](#i/nbc)')
+    .replace('nbc sports',        '[](#i/nbc-sports)')
+    .replace('pac12',             '[](#i/pac12-network)')
+    .replace('rsn',               '[](#i/rsn)')
+    .replace('sec network',       '[](#i/sec-network)')
+    .replace('tbs',               '[](#i/tbs)')
+    .replace('tnt',               '[](#i/tnt)')
+    .replace('tru tv',            '[](#i/tru-tv)');
 }
 
 function parseDate(value) {
